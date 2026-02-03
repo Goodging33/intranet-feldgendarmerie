@@ -8,8 +8,9 @@ const supabaseClient = supabase.createClient(
 
 // 🔐 Protection
 async function checkAuth() {
-  const { data } = await supabaseClient.auth.getUser();
-  if (!data.user) {
+  const { data } = await supabaseClient.auth.getSession();
+
+  if (!data.session) {
     window.location.href = "index.html";
   }
 }
