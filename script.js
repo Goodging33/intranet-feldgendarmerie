@@ -8,10 +8,7 @@ const supabaseClient = supabase.createClient(
 
 async function login() {
   const status = document.getElementById("status");
-  const loader = document.getElementById("loader");
-
-  status.innerText = "";
-  loader.style.display = "block"; // Affiche le loader
+  status.innerText = "Connexion en cours...";
 
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
@@ -20,8 +17,6 @@ async function login() {
     email,
     password
   });
-
-  loader.style.display = "none"; // Cache le loader
 
   if (error) {
     status.innerText = "Connexion refusée ❌";
