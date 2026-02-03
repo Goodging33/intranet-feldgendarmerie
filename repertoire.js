@@ -60,9 +60,10 @@ async function search() {
 }
 
 // 📄 Ouvrir fiche
-function openFiche(id) {
+window.openFiche = function (id) {
   window.location.href = `fiche.html?id=${id}`;
-}
+};
+
 
 function back() {
   window.location.href = "accueil.html";
