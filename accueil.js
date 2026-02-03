@@ -6,7 +6,6 @@ const supabaseClient = supabase.createClient(
   SUPABASE_ANON_KEY
 );
 
-// 🔐 Protection de la page
 async function checkAuth() {
   const { data } = await supabaseClient.auth.getUser();
 
@@ -20,7 +19,6 @@ async function checkAuth() {
 
 checkAuth();
 
-// Navigation
 function goCreate() {
   window.location.href = "create.html";
 }
@@ -33,3 +31,13 @@ async function logout() {
   await supabaseClient.auth.signOut();
   window.location.href = "index.html";
 }
+
+function detectMobile() {
+  const isMobile = /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
+
+  if (isMobile) {
+    document.getElementById("mobile-warning").style.display = "block";
+  }
+}
+
+detectMobile();
