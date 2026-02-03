@@ -3,6 +3,73 @@
 <head>
   <meta charset="UTF-8">
   <title>FG Intranet – Accueil</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      color: #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    h2 {
+      margin-top: 40px;
+      color: #d96b00; /* Orange pro */
+      font-size: 2rem;
+      text-align: center;
+    }
+
+    #user {
+      margin-top: 10px;
+      font-size: 1rem;
+      color: #444;
+    }
+
+    .container {
+      margin-top: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    button {
+      padding: 15px;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #d96b00;
+      color: white;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #b85d00;
+    }
+
+    /* Message mobile */
+    #mobile-warning {
+      margin-top: 20px;
+      padding: 10px 15px;
+      background: #ffcc00;
+      color: #000;
+      border-radius: 5px;
+      font-weight: bold;
+      display: none;
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+    }
+  </style>
 </head>
 <body>
 
@@ -10,11 +77,16 @@
 
   <p id="user"></p>
 
-  <button onclick="goCreate()">Créer une fiche</button>
-  <br><br>
-  <button onclick="goSearch()">Répertoire</button>
-  <br><br>
-  <button onclick="logout()">Déconnexion</button>
+  <div id="mobile-warning">
+    ⚠️ Site non optimisé pour téléphone.  
+    Il est fortement conseillé d'utiliser un ordinateur.
+  </div>
+
+  <div class="container">
+    <button onclick="goCreate()">Créer une fiche</button>
+    <button onclick="goSearch()">Répertoire</button>
+    <button onclick="logout()">Déconnexion</button>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="accueil.js"></script>
