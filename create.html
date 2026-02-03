@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>FG Intranet – Créer une fiche</title>
+</head>
+<body>
+
+  <h2>Créer une fiche</h2>
+
+  <input id="steam_id" placeholder="Steam ID">
+  <br><br>
+
+  <input id="nom" placeholder="Nom">
+  <br><br>
+
+  <input id="prenom" placeholder="Prénom">
+  <br><br>
+
+  <textarea id="commentaire" placeholder="Commentaire"></textarea>
+  <br><br>
+
+  <button onclick="createFiche()">Valider</button>
+  <br><br>
+
+  <p id="status"></p>
+  <button onclick="back()">Retour</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="create.js"></script>
+
+</body>
+</html>
