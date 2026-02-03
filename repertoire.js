@@ -67,3 +67,7 @@ function openFiche(id) {
 function back() {
   window.location.href = "accueil.html";
 }
+
+function openFiche(id) {
+  window.location.href = `fiche.html?id=${id}`;
+}
