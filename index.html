@@ -3,21 +3,118 @@
 <head>
   <meta charset="UTF-8">
   <title>FG Intranet – Connexion</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      color: #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    h2 {
+      margin-top: 40px;
+      color: #d96b00;
+      font-size: 2rem;
+      text-align: center;
+    }
+
+    .container {
+      margin-top: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    input {
+      padding: 12px;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 15px;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #d96b00;
+      color: white;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #b85d00;
+    }
+
+    #status {
+      margin-top: 10px;
+      font-size: 1rem;
+      text-align: center;
+      color: #444;
+    }
+
+    /* Mode sombre */
+    .dark-mode {
+      background: #1a1a1a;
+      color: #e6e6e6;
+    }
+
+    .dark-mode h2 {
+      color: #ff8c1a;
+    }
+
+    .dark-mode button {
+      background: #ff8c1a;
+    }
+
+    .dark-mode button:hover {
+      background: #cc6f15;
+    }
+
+    .dark-mode input {
+      background: #2a2a2a;
+      color: #fff;
+      border: 1px solid #555;
+    }
+
+    .dark-mode #status {
+      color: #ddd;
+    }
+
+  </style>
 </head>
 <body>
 
-  <h2>Connexion Feldgendarmerie</h2>
+  <h2>Connexion Intranet FG</h2>
 
-  <input id="email" type="email" placeholder="Email">
-  <br><br>
-  <input id="password" type="password" placeholder="Mot de passe">
-  <br><br>
-  <button onclick="login()">Se connecter</button>
+  <div class="container">
+    <input type="email" id="email" placeholder="Adresse email">
+    <input type="password" id="password" placeholder="Mot de passe">
+    <button onclick="login()">Se connecter</button>
+    <p id="status"></p>
+  </div>
 
-  <p id="status"></p>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <script src="script.js"></script>
+
+  <script>
+    // Appliquer automatiquement le thème sombre si l'utilisateur l'a choisi
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
+      document.body.classList.add("dark-mode");
+    }
+  </script>
 
 </body>
 </html>
