@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Répertoire</title>
+</head>
+<body>
+
+  <h2>Répertoire par SteamID</h2>
+
+  <input type="text" id="steam_id" placeholder="Steam ID">
+  <button onclick="search()">Rechercher</button>
+
+  <p id="status"></p>
+
+  <div id="resultats"></div>
+
+  <button onclick="back()">Retour</button>
+
+  <script src="https://unpkg.com/@supabase/supabase-js"></script>
+  <script src="repertoire.js"></script>
+</body>
+</html>
