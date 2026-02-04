@@ -39,6 +39,23 @@ async function loadFiche() {
   `;
 }
 
+function supprimerFiche() {
+    if (!confirm("Voulez-vous vraiment supprimer cette fiche ?")) return;
+
+    fetch("delete.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "id=" + ficheId
+    })
+    .then(res => res.text())
+    .then(data => {
+        alert(data);
+        location.reload(); // recharge la liste
+    });
+}
+
 loadFiche();
 
 function back() {
