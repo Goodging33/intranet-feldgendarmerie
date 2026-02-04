@@ -74,5 +74,7 @@ function openFiche(id) {
 }
 
 window.openFiche = function (id) {
-  alert("ID reçu : " + id);
+  alert("ID reçu : " + id); // tu peux l'enlever après
+  window.location.href = `fiche.html?id=${id}`;
 };
+
