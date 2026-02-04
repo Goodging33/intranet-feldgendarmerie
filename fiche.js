@@ -39,22 +39,26 @@ async function loadFiche() {
   `;
 }
 
-function supprimerFiche() {
-    if (!confirm("Voulez-vous vraiment supprimer cette fiche ?")) return;
+  let ficheId = new URLSearchParams(window.location.search).get("id");
 
-    fetch("delete.php", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-        },
-        body: "id=" + ficheId
-    })
-    .then(res => res.text())
-    .then(data => {
-        alert(data);
-        location.reload(); // recharge la liste
-    });
-}
+
+  window.supprimerFiche = async function () {
+    if (!confirm("Voulez-vous vraiment supprimer cette fiche ?")) return;
+  
+    const { error } = await supabaseClient
+      .from("fiches")
+      .delete()
+      .eq("id", ficheId);
+  
+    if (error) {
+      console.error(error);
+      alert("Erreur lors de la suppression ❌");
+      return;
+    }
+
+      alert("Fiche supprimée ✅");
+      window.location.href = "search.html";
+    };
 
 loadFiche();
 
