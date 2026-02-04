@@ -59,22 +59,12 @@ async function search() {
   });
 }
 
-// 📄 Ouvrir fiche
-window.openFiche = function (id) {
-  window.location.href = `fiche.html?id=${id}`;
-};
-
-
 function back() {
   window.location.href = "accueil.html";
 }
 
-function openFiche(id) {
-  window.location.href = `fiche.html?id=${id}`;
-}
-
 window.openFiche = function (id) {
-  alert("ID reçu : " + id); // tu peux l'enlever après
+  console.log("Ouverture fiche ID :", id);
   window.location.href = `fiche.html?id=${id}`;
 };
 
