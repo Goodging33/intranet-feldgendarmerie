@@ -64,7 +64,6 @@ function back() {
 }
 
 window.openFiche = function (id) {
-  console.log("Ouverture fiche ID :", id);
-  window.location.href = `fiche.html?id=${id}`;
+  console.log("Redirection vers fiche.html avec id =", id);
+  window.location.href = "fiche.html?id=" + encodeURIComponent(id);
 };
-
