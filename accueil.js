@@ -24,7 +24,7 @@ function goCreate() {
 }
 
 function goSearch() {
-  window.location.href = "search.html";
+  window.location.href = "repertoire.html";
 }
 
 async function logout() {
