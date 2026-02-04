@@ -52,7 +52,7 @@ async function search() {
     const div = document.createElement("div");
     div.innerHTML = `
       <b>${fiche.prenom} ${fiche.nom}</b><br>
-      <button onclick="openFiche(${fiche.id})">Ouvrir</button>
+      <button onclick="openFiche('${fiche.id}')">Ouvrir</button>
       <hr>
     `;
     resultats.appendChild(div);
