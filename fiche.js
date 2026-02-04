@@ -57,7 +57,7 @@ async function loadFiche() {
     }
 
       alert("Fiche supprimée ✅");
-      window.location.href = "search.html";
+      window.location.href = "repertoire.html";
     };
 
 loadFiche();
