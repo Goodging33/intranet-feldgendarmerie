@@ -72,3 +72,7 @@ function back() {
 function openFiche(id) {
   window.location.href = `fiche.html?id=${id}`;
 }
+
+window.openFiche = function (id) {
+  alert("ID reçu : " + id);
+};
