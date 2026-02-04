@@ -3,21 +3,136 @@
 <head>
   <meta charset="UTF-8">
   <title>Répertoire</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      color: #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    h2 {
+      margin-top: 40px;
+      color: #d96b00;
+      font-size: 2rem;
+      text-align: center;
+    }
+
+    .container {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    input {
+      padding: 12px;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 15px;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #d96b00;
+      color: white;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #b85d00;
+    }
+
+    #status {
+      margin-top: 10px;
+      font-size: 1rem;
+      text-align: center;
+      color: #444;
+    }
+
+    #resultats {
+      margin-top: 20px;
+      width: 90%;
+      max-width: 500px;
+      padding: 15px;
+      background: #fff;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+    }
+
+    /* Mode sombre */
+    .dark-mode {
+      background: #1a1a1a;
+      color: #e6e6e6;
+    }
+
+    .dark-mode h2 {
+      color: #ff8c1a;
+    }
+
+    .dark-mode button {
+      background: #ff8c1a;
+    }
+
+    .dark-mode button:hover {
+      background: #cc6f15;
+    }
+
+    .dark-mode input {
+      background: #2a2a2a;
+      color: #fff;
+      border: 1px solid #555;
+    }
+
+    .dark-mode #resultats {
+      background: #2a2a2a;
+      border: 1px solid #444;
+    }
+
+    .dark-mode #status {
+      color: #ddd;
+    }
+
+  </style>
 </head>
 <body>
 
   <h2>Répertoire par SteamID</h2>
 
-  <input type="text" id="steam_id" placeholder="Steam ID">
-  <button onclick="search()">Rechercher</button>
-
-  <p id="status"></p>
+  <div class="container">
+    <input type="text" id="steam_id" placeholder="Steam ID">
+    <button onclick="search()">Rechercher</button>
+    <p id="status"></p>
+  </div>
 
   <div id="resultats"></div>
 
-  <button onclick="back()">Retour</button>
+  <button onclick="back()" style="margin-top: 30px;">Retour</button>
 
   <script src="https://unpkg.com/@supabase/supabase-js"></script>
   <script src="repertoire.js"></script>
+
+  <script>
+    // Appliquer automatiquement le thème sombre si l'utilisateur l'a choisi
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
+      document.body.classList.add("dark-mode");
+    }
+  </script>
+
 </body>
 </html>
