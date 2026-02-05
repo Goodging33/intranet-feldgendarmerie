@@ -41,40 +41,6 @@ async function loadFiche() {
 
 loadFiche();
 
-async function getUserRole() {
-  const { data: userData } = await supabaseClient.auth.getUser();
-
-  if (!userData.user) return null;
-
-  const { data, error } = await supabaseClient
-    .from("user_roles")
-    .select("role")
-    .eq("user_id", userData.user.id)
-    .single();
-
-  if (error) {
-    console.error("Erreur role :", error);
-    return null;
-  }
-
-  return data.role;
-}
-
-async function applyPermissions() {
-  const role = await getUserRole();
-
-  if (role !== "chef") {
-    document.getElementById("modifierFiche").style.display = "none";
-    document.getElementById("supprimerFiche").style.display = "none";
-
-    document.getElementById("nom").disabled = true;
-    document.getElementById("prenom").disabled = true;
-    document.getElementById("commentaire").disabled = true;
-  }
-}
-
-applyPermissions();
-
 // ✏️ Modifier fiche
 window.modifierFiche = async function () {
   const nom = document.getElementById("nom").value;
