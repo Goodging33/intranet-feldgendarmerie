@@ -62,18 +62,24 @@ async function loadAgenda() {
     // colonnes jours
     for (let day = 0; day < 7; day++) {
       const cell = document.createElement("div");
+      cell.className = "cell";
       cell.dataset.day = day;
       cell.dataset.hour = hour;
       grid.appendChild(cell);
     }
   }
 
-  // Placement des événements
+  // Placement des événements avec durée
   if (!error && data.length > 0) {
     data.forEach(ev => {
       const start = new Date(ev.start_time);
+      const end = new Date(ev.end_time);
+
       const day = (start.getDay() + 6) % 7; // Lundi = 0
       const hour = start.getHours();
+      const minutes = start.getMinutes();
+
+      const durationMinutes = (end - start) / 60000;
 
       const cell = [...grid.children].find(c =>
         c.dataset &&
@@ -82,8 +88,20 @@ async function loadAgenda() {
       );
 
       if (cell) {
-        cell.classList.add("event");
-        cell.innerHTML = `<b>${ev.title}</b><br>${start.toLocaleTimeString()}`;
+        const eventDiv = document.createElement("div");
+        eventDiv.className = "event";
+
+        eventDiv.style.top = `${minutes}px`;
+        eventDiv.style.height = `${durationMinutes}px`;
+
+        eventDiv.innerHTML = `
+          <b>${ev.title}</b><br>
+          ${start.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}
+          →
+          ${end.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}
+        `;
+
+        cell.appendChild(eventDiv);
       }
     });
   }
