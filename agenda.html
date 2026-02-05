@@ -4,22 +4,161 @@
   <meta charset="UTF-8">
   <title>Agenda – Feldgendarmerie</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      color: #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    h2 {
+      margin-top: 40px;
+      color: #d96b00;
+      font-size: 2rem;
+      text-align: center;
+    }
+
+    .week-nav {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      font-size: 1.2rem;
+    }
+
+    button {
+      padding: 12px 18px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #d96b00;
+      color: white;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #b85d00;
+    }
+
+    #agenda {
+      margin-top: 30px;
+      width: 95%;
+      max-width: 900px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background: white;
+      padding: 10px;
+      overflow-x: auto;
+    }
+
+    /* Grille du planning */
+    .grid {
+      display: grid;
+      grid-template-columns: 80px repeat(7, 1fr);
+      border-collapse: collapse;
+    }
+
+    .grid div {
+      border: 1px solid #ccc;
+      padding: 6px;
+      min-height: 40px;
+      font-size: 0.9rem;
+    }
+
+    .hour {
+      background: #eee;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .day-header {
+      background: #d96b00;
+      color: white;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .event {
+      background: #ffd9b3;
+      border-left: 4px solid #d96b00;
+    }
+
+    /* Mode sombre */
+    .dark-mode {
+      background: #1a1a1a;
+      color: #e6e6e6;
+    }
+
+    .dark-mode h2 {
+      color: #ff8c1a;
+    }
+
+    .dark-mode button {
+      background: #ff8c1a;
+    }
+
+    .dark-mode button:hover {
+      background: #cc6f15;
+    }
+
+    .dark-mode #agenda {
+      background: #2a2a2a;
+      border: 1px solid #444;
+    }
+
+    .dark-mode .grid div {
+      border: 1px solid #555;
+    }
+
+    .dark-mode .hour {
+      background: #333;
+    }
+
+    .dark-mode .day-header {
+      background: #ff8c1a;
+      color: black;
+    }
+
+    .dark-mode .event {
+      background: #cc6f15;
+      color: white;
+      border-left: 4px solid #ffb066;
+    }
+
+  </style>
 </head>
 <body>
 
 <h2>Agenda hebdomadaire</h2>
 
-<div>
-  <button onclick="prevWeek()">⬅️ Semaine précédente</button>
+<div class="week-nav">
+  <button onclick="prevWeek()">⬅️</button>
   <span id="week-label"></span>
-  <button onclick="nextWeek()">Semaine suivante ➡️</button>
+  <button onclick="nextWeek()">➡️</button>
 </div>
 
 <div id="agenda"></div>
 
-<button onclick="back()">Retour</button>
+<button onclick="back()" style="margin-top: 30px;">Retour</button>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="agenda.js"></script>
+
+<script>
+  // Appliquer automatiquement le thème sombre si l'utilisateur l'a choisi
+  const savedTheme = localStorage.getItem("theme");
+  if (savedTheme === "dark") {
+    document.body.classList.add("dark-mode");
+  }
+</script>
+
 </body>
 </html>
