@@ -45,8 +45,8 @@ async function applyPermissions() {
   const role = await getUserRole();
 
   if (role !== "chef") {
-    document.getElementById("btn-edit").style.display = "none";
-    document.getElementById("btn-delete").style.display = "none";
+    document.getElementById("modifierFiche").style.display = "none";
+    document.getElementById("supprimerFiche").style.display = "none";
 
     document.getElementById("nom").disabled = true;
     document.getElementById("prenom").disabled = true;
