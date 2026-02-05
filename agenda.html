@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Agenda – Feldgendarmerie</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<h2>Agenda hebdomadaire</h2>
+
+<div>
+  <button onclick="prevWeek()">⬅️ Semaine précédente</button>
+  <span id="week-label"></span>
+  <button onclick="nextWeek()">Semaine suivante ➡️</button>
+</div>
+
+<div id="agenda"></div>
+
+<button onclick="back()">Retour</button>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="agenda.js"></script>
+</body>
+</html>
