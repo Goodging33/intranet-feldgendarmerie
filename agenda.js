@@ -81,8 +81,8 @@ async function loadAgenda() {
 
       const durationMinutes = (end - start) / 60000;
 
-      const cell = [...grid.children].find(c =>
-        c.dataset &&
+      // 🔥 Correction : on ne cherche QUE dans les vraies cellules
+      const cell = [...grid.querySelectorAll(".cell")].find(c =>
         Number(c.dataset.day) === day &&
         Number(c.dataset.hour) === hour
       );
