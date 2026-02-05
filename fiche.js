@@ -15,52 +15,37 @@ async function checkAuth() {
 }
 checkAuth();
 
-// 📄 Charger fiche
-async function loadFiche() {
-  const params = new URLSearchParams(window.location.search);
-  const id = params.get("id");
+// 🆔 ID fiche (UNE SEULE FOIS)
+const ficheId = new URLSearchParams(window.location.search).get("id");
 
+if (!ficheId) {
+  alert("ID manquant");
+  window.location.href = "repertoire.html";
+}
+
+// 📄 Charger la fiche
+async function loadFiche() {
   const { data, error } = await supabaseClient
     .from("fiches")
     .select("*")
-    .eq("id", id)
+    .eq("id", ficheId)
     .single();
 
   if (error) {
     console.error(error);
+    alert("Erreur chargement fiche ❌");
     return;
   }
 
-    document.getElementById("steam_id").value = data.steam_id;
-    document.getElementById("nom").value = data.nom;
-    document.getElementById("prenom").value = data.prenom;
-    document.getElementById("commentaire").value = data.commentaire ?? "";
-  ;
+  document.getElementById("steam_id").value = data.steam_id;
+  document.getElementById("nom").value = data.nom;
+  document.getElementById("prenom").value = data.prenom;
+  document.getElementById("commentaire").value = data.commentaire ?? "";
 }
-
-  let ficheId = new URLSearchParams(window.location.search).get("id");
-
-
-  window.supprimerFiche = async function () {
-    if (!confirm("Voulez-vous vraiment supprimer cette fiche ?")) return;
-  
-    const { error } = await supabaseClient
-      .from("fiches")
-      .delete()
-      .eq("id", ficheId);
-  
-    if (error) {
-      console.error(error);
-      alert("Erreur lors de la suppression ❌");
-      return;
-    }
-
-      alert("Fiche supprimée ✅");
-      window.location.href = "repertoire.html";
-    };
 
 loadFiche();
 
+// ✏️ Modifier fiche
 window.modifierFiche = async function () {
   const nom = document.getElementById("nom").value;
   const prenom = document.getElementById("prenom").value;
@@ -76,11 +61,7 @@ window.modifierFiche = async function () {
 
   const { error } = await supabaseClient
     .from("fiches")
-    .update({
-      nom,
-      prenom,
-      commentaire
-    })
+    .update({ nom, prenom, commentaire })
     .eq("id", ficheId);
 
   if (error) {
@@ -92,14 +73,26 @@ window.modifierFiche = async function () {
   status.innerText = "Fiche modifiée ✅";
 };
 
+// 🗑 Supprimer fiche
+window.supprimerFiche = async function () {
+  if (!confirm("Voulez-vous vraiment supprimer cette fiche ?")) return;
 
+  const { error } = await supabaseClient
+    .from("fiches")
+    .delete()
+    .eq("id", ficheId);
+
+  if (error) {
+    console.error(error);
+    alert("Erreur lors de la suppression ❌");
+    return;
+  }
+
+  alert("Fiche supprimée ✅");
+  window.location.href = "repertoire.html";
+};
+
+// 🔙 Retour
 function back() {
-  history.back();
-}
-
-const ficheId = new URLSearchParams(window.location.search).get("id");
-
-if (!ficheId) {
-  alert("ID manquant");
-  window.location.href = "search.html";
+  window.location.href = "repertoire.html";
 }
