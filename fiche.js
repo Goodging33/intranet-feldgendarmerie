@@ -41,6 +41,21 @@ async function loadFiche() {
 
 loadFiche();
 
+async function applyPermissions() {
+  const role = await getUserRole();
+
+  if (role !== "chef") {
+    document.getElementById("btn-edit").style.display = "none";
+    document.getElementById("btn-delete").style.display = "none";
+
+    document.getElementById("nom").disabled = true;
+    document.getElementById("prenom").disabled = true;
+    document.getElementById("commentaire").disabled = true;
+  }
+}
+
+applyPermissions();
+
 // ✏️ Modifier fiche
 window.modifierFiche = async function () {
   const nom = document.getElementById("nom").value;
