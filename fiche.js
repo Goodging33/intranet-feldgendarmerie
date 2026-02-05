@@ -6,6 +6,8 @@ const supabaseClient = supabase.createClient(
   SUPABASE_ANON_KEY
 );
 
+const ficheId = new URLSearchParams(window.location.search).get("id");
+
 // 🔐 Protection
 async function checkAuth() {
   const { data } = await supabaseClient.auth.getSession();
@@ -16,12 +18,6 @@ async function checkAuth() {
 checkAuth();
 
 // 🆔 ID fiche (UNE SEULE FOIS)
-const ficheId = new URLSearchParams(window.location.search).get("id");
-
-if (!ficheId) {
-  alert("ID manquant");
-  window.location.href = "repertoire.html";
-}
 
 // 📄 Charger la fiche
 async function loadFiche() {
@@ -93,6 +89,6 @@ window.supprimerFiche = async function () {
 };
 
 // 🔙 Retour
-function back() {
+window.back = function () {
   window.location.href = "repertoire.html";
-}
+};
