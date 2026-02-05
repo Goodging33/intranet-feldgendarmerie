@@ -69,6 +69,21 @@ async function loadAgenda() {
     }
   }
 
+  // --- Mise en avant du jour actuel ---
+  const today = new Date();
+  const todayIndex = (today.getDay() + 6) % 7; // Lundi = 0
+
+  // Surligner les cellules du jour actuel
+  grid.querySelectorAll(`.cell[data-day="${todayIndex}"]`).forEach(cell => {
+    cell.classList.add("current-day");
+  });
+
+  // Surligner l'en-tête du jour actuel
+  const headers = grid.querySelectorAll(".day-header");
+  if (headers[todayIndex]) {
+    headers[todayIndex].classList.add("current-day");
+  }
+
   // Placement des événements avec durée
   if (!error && data.length > 0) {
     data.forEach(ev => {
@@ -81,7 +96,7 @@ async function loadAgenda() {
 
       const durationMinutes = (end - start) / 60000;
 
-      // 🔥 Correction : on ne cherche QUE dans les vraies cellules
+      // On ne cherche QUE dans les vraies cellules
       const cell = [...grid.querySelectorAll(".cell")].find(c =>
         Number(c.dataset.day) === day &&
         Number(c.dataset.hour) === hour
