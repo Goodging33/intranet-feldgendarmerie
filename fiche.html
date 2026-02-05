@@ -8,10 +8,23 @@
 
   <h2>Détail de la fiche</h2>
 
-  <p id="contenu"></p>
+  <label>Steam ID</label><br>
+  <input type="text" id="steam_id" disabled><br><br>
+
+  <label>Nom</label><br>
+  <input type="text" id="nom"><br><br>
+
+  <label>Prénom</label><br>
+  <input type="text" id="prenom"><br><br>
+
+  <label>Commentaire</label><br>
+  <textarea id="commentaire"></textarea><br><br>
   
   <button onclick="back()">Retour</button>
   <button onclick="supprimerFiche()">Supprimer</button>
+  <button onclick="modifierFiche()">Enregistrer</button>
+
+  <p id="status"></p>
   
   <script src="https://unpkg.com/@supabase/supabase-js"></script>
   <script src="fiche.js"></script>
