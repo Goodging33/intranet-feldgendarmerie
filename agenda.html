@@ -66,17 +66,20 @@
       border-collapse: collapse;
     }
 
-    .grid div {
+    .grid .cell {
+      position: relative;
       border: 1px solid #ccc;
-      padding: 6px;
-      min-height: 40px;
-      font-size: 0.9rem;
+      min-height: 60px; /* 1h = 60px */
+      overflow: visible;
     }
 
     .hour {
       background: #eee;
       font-weight: bold;
       text-align: center;
+      border: 1px solid #ccc;
+      min-height: 60px;
+      line-height: 60px;
     }
 
     .day-header {
@@ -84,11 +87,21 @@
       color: white;
       text-align: center;
       font-weight: bold;
+      border: 1px solid #ccc;
+      padding: 8px 0;
     }
 
+    /* Événement étendu */
     .event {
+      position: absolute;
+      left: 2px;
+      right: 2px;
       background: #ffd9b3;
       border-left: 4px solid #d96b00;
+      padding: 4px;
+      font-size: 0.8rem;
+      border-radius: 4px;
+      box-sizing: border-box;
     }
 
     /* Mode sombre */
@@ -114,25 +127,27 @@
       border: 1px solid #444;
     }
 
-    .dark-mode .grid div {
+    .dark-mode .cell {
       border: 1px solid #555;
     }
 
     .dark-mode .hour {
       background: #333;
+      border: 1px solid #555;
+      color: #eee;
     }
 
     .dark-mode .day-header {
       background: #ff8c1a;
       color: black;
+      border: 1px solid #555;
     }
 
     .dark-mode .event {
       background: #cc6f15;
-      color: white;
       border-left: 4px solid #ffb066;
+      color: white;
     }
-
   </style>
 </head>
 <body>
