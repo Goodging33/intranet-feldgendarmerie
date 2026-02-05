@@ -1,16 +1,13 @@
 const SUPABASE_URL = "https://bdkzvkdqznkjkvpxwmqg.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJka3p2a2Rxem5ramt2cHh3bXFnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAwNDkwNzksImV4cCI6MjA4NTYyNTA3OX0.WPqm4torQsQjDcERoZtTsaGexR4V2GEpn9GtIMelALM";
 
-const supabaseClient = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let currentWeek = new Date();
 
 function startOfWeek(date) {
   const d = new Date(date);
-  const day = d.getDay() || 7; // dimanche = 7
+  const day = d.getDay() || 7;
   if (day !== 1) d.setHours(-24 * (day - 1));
   d.setHours(0, 0, 0, 0);
   return d;
@@ -39,26 +36,59 @@ async function loadAgenda() {
   const agenda = document.getElementById("agenda");
   agenda.innerHTML = "";
 
-  if (error) {
-    agenda.innerText = "Erreur de chargement ❌";
-    return;
-  }
+  // Création de la grille
+  const grid = document.createElement("div");
+  grid.className = "grid";
 
-  if (data.length === 0) {
-    agenda.innerText = "Aucun événement cette semaine";
-    return;
-  }
+  const days = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
 
-  data.forEach(ev => {
+  // Ligne des jours
+  grid.appendChild(document.createElement("div")); // case vide
+  days.forEach(d => {
     const div = document.createElement("div");
-    div.innerHTML = `
-      <b>${ev.title}</b><br>
-      ${new Date(ev.start_time).toLocaleString()} → 
-      ${new Date(ev.end_time).toLocaleString()}
-      <hr>
-    `;
-    agenda.appendChild(div);
+    div.className = "day-header";
+    div.innerText = d;
+    grid.appendChild(div);
   });
+
+  // 24 heures
+  for (let hour = 0; hour < 24; hour++) {
+    // colonne heure
+    const h = document.createElement("div");
+    h.className = "hour";
+    h.innerText = hour + "h";
+    grid.appendChild(h);
+
+    // colonnes jours
+    for (let day = 0; day < 7; day++) {
+      const cell = document.createElement("div");
+      cell.dataset.day = day;
+      cell.dataset.hour = hour;
+      grid.appendChild(cell);
+    }
+  }
+
+  // Placement des événements
+  if (!error && data.length > 0) {
+    data.forEach(ev => {
+      const start = new Date(ev.start_time);
+      const day = (start.getDay() + 6) % 7; // Lundi = 0
+      const hour = start.getHours();
+
+      const cell = [...grid.children].find(c =>
+        c.dataset &&
+        Number(c.dataset.day) === day &&
+        Number(c.dataset.hour) === hour
+      );
+
+      if (cell) {
+        cell.classList.add("event");
+        cell.innerHTML = `<b>${ev.title}</b><br>${start.toLocaleTimeString()}`;
+      }
+    });
+  }
+
+  agenda.appendChild(grid);
 }
 
 function nextWeek() {
