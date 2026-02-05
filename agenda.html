@@ -67,10 +67,14 @@
     }
 
     .grid .cell {
-      position: relative;
-      border: 1px solid #ccc;
-      min-height: 60px; /* 1h = 60px */
-      overflow: visible;
+      border-left: 1px solid #ccc;
+      border-right: 1px solid #ccc;
+      border-bottom: 1px solid #ccc;
+      border-top: none; /* empêche la ligne de couper l’événement */
+    }
+
+    .grid .cell[data-hour="0"] {
+      border-top: 1px solid #ccc;
     }
 
     .hour {
@@ -148,6 +152,15 @@
       border-left: 4px solid #ffb066;
       color: white;
     }
+
+    .current-day {
+      background: rgba(217, 107, 0, 0.15); /* léger orange */
+    }
+
+    .dark-mode .current-day {
+      background: rgba(255, 140, 26, 0.2);
+    }
+
   </style>
 </head>
 <body>
