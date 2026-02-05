@@ -31,12 +31,11 @@ async function loadFiche() {
     return;
   }
 
-  document.getElementById("contenu").innerHTML = `
-    <b>SteamID :</b> ${data.steam_id}<br><br>
-    <b>Nom :</b> ${data.prenom} ${data.nom}<br><br>
-    <b>Commentaire :</b><br>
-    ${data.commentaire || "Aucun"}
-  `;
+    document.getElementById("steam_id").value = data.steam_id;
+    document.getElementById("nom").value = data.nom;
+    document.getElementById("prenom").value = data.prenom;
+    document.getElementById("commentaire").value = data.commentaire ?? "";
+  ;
 }
 
   let ficheId = new URLSearchParams(window.location.search).get("id");
@@ -62,6 +61,45 @@ async function loadFiche() {
 
 loadFiche();
 
+window.modifierFiche = async function () {
+  const nom = document.getElementById("nom").value;
+  const prenom = document.getElementById("prenom").value;
+  const commentaire = document.getElementById("commentaire").value;
+  const status = document.getElementById("status");
+
+  if (!nom || !prenom) {
+    status.innerText = "Nom et prénom requis ❌";
+    return;
+  }
+
+  status.innerText = "Enregistrement...";
+
+  const { error } = await supabaseClient
+    .from("fiches")
+    .update({
+      nom,
+      prenom,
+      commentaire
+    })
+    .eq("id", ficheId);
+
+  if (error) {
+    console.error(error);
+    status.innerText = "Erreur lors de la modification ❌";
+    return;
+  }
+
+  status.innerText = "Fiche modifiée ✅";
+};
+
+
 function back() {
   history.back();
+}
+
+const ficheId = new URLSearchParams(window.location.search).get("id");
+
+if (!ficheId) {
+  alert("ID manquant");
+  window.location.href = "search.html";
 }
