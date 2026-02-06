@@ -138,8 +138,10 @@ async function loadAgenda() {
 
         eventDiv.style.top = `${top}px`;
         eventDiv.style.height = `${height}px`;
-        eventDiv.style.width = `${100 / totalCols}%`;
-        eventDiv.style.left = `${(100 / totalCols) * column}%`;
+
+        // 🔥 Correction du décalage horizontal
+        eventDiv.style.width = `calc(${100 / totalCols}% - 4px)`; 
+        eventDiv.style.left = `calc(${(100 / totalCols) * column}% + 2px)`;
 
         eventDiv.innerHTML = `
           <b>${ev.title}</b><br>
