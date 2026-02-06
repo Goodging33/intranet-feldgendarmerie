@@ -147,3 +147,9 @@ document.getElementById("next").onclick=()=>{
 };
 
 loadAgenda();
+
+window.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("popup-close").onclick = () => {
+    document.getElementById("event-popup").classList.add("hidden");
+  };
+});
