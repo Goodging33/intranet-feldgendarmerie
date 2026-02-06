@@ -107,24 +107,34 @@ async function loadAgenda() {
 
       const columns = [];
 
+          // Détection PRO des chevauchements
+      const tracks = []; // chaque piste = liste d'événements non chevauchants
+
       events.forEach(event => {
         let placed = false;
 
-        for (let i = 0; i < columns.length; i++) {
-          if (event.start >= columns[i]) {
-            columns[i] = event.end;
-            event.column = i;
+        for (let t = 0; t < tracks.length; t++) {
+          const lastEvent = tracks[t][tracks[t].length - 1];
+
+          // Si l'événement ne chevauche pas le dernier de la piste
+          if (event.start >= lastEvent.end) {
+            tracks[t].push(event);
+            event.column = t;
             placed = true;
             break;
           }
         }
 
-        if (!placed) {
-          event.column = columns.length;
-          columns.push(event.end);
-        }
-      });
+      // Sinon, on crée une nouvelle piste
+           if (!placed) {
+            event.column = tracks.length;
+            tracks.push([event]);
+          }
+        });
 
+      const totalCols = tracks.length;
+
+        
       const totalCols = columns.length;
 
       events.forEach(({ ev, start, end, column }) => {
