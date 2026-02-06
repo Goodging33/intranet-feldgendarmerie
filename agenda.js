@@ -70,8 +70,8 @@ async function loadAgenda() {
   const { data, error } = await supabaseClient
     .from("events")
     .select("*")
-    .gte("start_time", weekStart.toISOString())
-    .lt("start_time", weekEnd.toISOString())
+    .gte("start_time", weekStart)
+    .lt("start_time", weekEnd)
     .order("start_time");
 
   if (error) {
