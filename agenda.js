@@ -133,6 +133,8 @@ async function loadAgenda() {
       events.forEach(({ ev, start, end, column }) => {
         const top = start.getHours() * HOUR_HEIGHT +
                     start.getMinutes() * (HOUR_HEIGHT / 60);
+        const OFFSET = 1;
+        eventDiv.style.top = `${top + OFFSET}px`;    
 
         const height = (end - start) / 60000 * (HOUR_HEIGHT / 60);
 
@@ -140,7 +142,7 @@ async function loadAgenda() {
         eventDiv.className = "event";
 
         eventDiv.style.top = `${top}px`;
-        eventDiv.style.height = `${height}px`;
+        eventDiv.style.height = `${height - OFFSET}px`;
 
         // 🔥 Correction du décalage horizontal
         eventDiv.style.width = `calc(${100 / totalCols}% - 4px)`; 
