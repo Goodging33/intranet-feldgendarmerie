@@ -67,12 +67,16 @@ async function loadAgenda() {
   }
 
   // Récupération des événements
-  const { data, error } = await supabaseClient
-    .from("events")
-    .select("*")
-    .gte("start_time", weekStart)
-    .lt("start_time", weekEnd)
-    .order("start_time");
+const startISO = new Date(weekStart.getTime() - weekStart.getTimezoneOffset() * 60000).toISOString();
+const endISO = new Date(weekEnd.getTime() - weekEnd.getTimezoneOffset() * 60000).toISOString();
+
+const { data, error } = await supabaseClient
+  .from("events")
+  .select("*")
+  .gte("start_time", startISO)
+  .lt("start_time", endISO)
+  .order("start_time");
+
 
   if (error) {
     console.error("Erreur Supabase:", error);
