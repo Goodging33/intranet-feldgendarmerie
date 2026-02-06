@@ -4,185 +4,32 @@
   <meta charset="UTF-8">
   <title>Agenda – Feldgendarmerie</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      color: #222;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-    }
-
-    h2 {
-      margin-top: 40px;
-      color: #d96b00;
-      font-size: 2rem;
-      text-align: center;
-    }
-
-    .week-nav {
-      margin-top: 20px;
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      font-size: 1.2rem;
-    }
-
-    button {
-      padding: 12px 18px;
-      font-size: 1rem;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      background: #d96b00;
-      color: white;
-      transition: 0.2s;
-    }
-
-    button:hover {
-      background: #b85d00;
-    }
-
-    #agenda {
-      margin-top: 30px;
-      width: 95%;
-      max-width: 1100px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      background: white;
-      overflow-x: auto;
-      position: relative;
-    }
-
-    /* Grille verticale */
-    .grid {
-      display: grid;
-      grid-template-columns: 80px repeat(7, 1fr);
-      position: relative;
-    }
-
-    /* Ligne = 1 heure */
-    .hour-row {
-      height: 80px;
-      border-bottom: 1px solid #ccc;
-      position: relative;
-    }
-
-    .hour-label {
-      text-align: center;
-      line-height: 80px;
-      font-weight: bold;
-      background: #eee;
-      border-right: 1px solid #ccc;
-    }
-
-    .day-header {
-      background: #d96b00;
-      color: white;
-      text-align: center;
-      font-weight: bold;
-      padding: 10px 0;
-      border-right: 1px solid #ccc;
-    }
-
-    .day-column {
-      position: relative;
-      border-right: 1px solid #ccc;
-    }
-
-    /* Événements */
-    .event {
-      position: absolute;
-      left: 2px;
-      right: 2px;
-      background: #ffd9b3;
-      border-left: 4px solid #d96b00;
-      padding: 4px;
-      font-size: 0.8rem;
-      border-radius: 4px;
-      box-sizing: border-box;
-      overflow: hidden;
-    }
-
-    /* Jour actuel */
-    .current-day {
-      background: rgba(217, 107, 0, 0.15);
-    }
-
-    .dark-mode .current-day {
-      background: rgba(255, 140, 26, 0.20);
-    }
-
-    /* Mode sombre */
-    .dark-mode {
-      background: #1a1a1a;
-      color: #e6e6e6;
-    }
-
-    .dark-mode h2 {
-      color: #ff8c1a;
-    }
-
-    .dark-mode button {
-      background: #ff8c1a;
-    }
-
-    .dark-mode button:hover {
-      background: #cc6f15;
-    }
-
-    .dark-mode #agenda {
-      background: #2a2a2a;
-      border: 1px solid #444;
-    }
-
-    .dark-mode .hour-label {
-      background: #333;
-      border-right: 1px solid #555;
-      color: #eee;
-    }
-
-    .dark-mode .day-header {
-      background: #ff8c1a;
-      color: black;
-      border-right: 1px solid #555;
-    }
-
-    .dark-mode .event {
-      background: #cc6f15;
-      border-left: 4px solid #ffb066;
-      color: white;
-    }
-</style>
+  <link rel="stylesheet" href="agenda.css">
 </head>
 <body>
 
 <h2>Agenda hebdomadaire</h2>
 
 <div class="week-nav">
-  <button onclick="prevWeek()">⬅️</button>
+  <button id="prev">⬅️</button>
   <span id="week-label"></span>
-  <button onclick="nextWeek()">➡️</button>
+  <button id="next">➡️</button>
 </div>
 
-<div id="agenda"></div>
+<div id="agenda-grid"></div>
 
-<button onclick="back()" style="margin-top: 30px;">Retour</button>
+<div id="event-popup" class="hidden">
+  <div class="popup-content">
+    <h3 id="popup-title"></h3>
+    <p id="popup-time"></p>
+    <button id="popup-close">Fermer</button>
+  </div>
+</div>
+
+<button onclick="window.location.href='accueil.html'" class="back-btn">Retour</button>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="agenda.js"></script>
-
-<script>
-  const savedTheme = localStorage.getItem("theme");
-  if (savedTheme === "dark") {
-    document.body.classList.add("dark-mode");
-  }
-</script>
 
 </body>
 </html>
