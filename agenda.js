@@ -105,10 +105,8 @@ async function loadAgenda() {
     eventsByDay.forEach((events, day) => {
       events.sort((a, b) => a.start - b.start);
 
-      const columns = [];
-
-          // Détection PRO des chevauchements
-      const tracks = []; // chaque piste = liste d'événements non chevauchants
+      // 🔥 Nouveau système PRO de chevauchement
+      const tracks = [];
 
       events.forEach(event => {
         let placed = false;
@@ -116,7 +114,6 @@ async function loadAgenda() {
         for (let t = 0; t < tracks.length; t++) {
           const lastEvent = tracks[t][tracks[t].length - 1];
 
-          // Si l'événement ne chevauche pas le dernier de la piste
           if (event.start >= lastEvent.end) {
             tracks[t].push(event);
             event.column = t;
@@ -125,17 +122,13 @@ async function loadAgenda() {
           }
         }
 
-      // Sinon, on crée une nouvelle piste
-           if (!placed) {
-            event.column = tracks.length;
-            tracks.push([event]);
-          }
-        });
+        if (!placed) {
+          event.column = tracks.length;
+          tracks.push([event]);
+        }
+      });
 
       const totalCols = tracks.length;
-
-        
-      const totalCols = columns.length;
 
       events.forEach(({ ev, start, end, column }) => {
         const top = start.getHours() * HOUR_HEIGHT +
