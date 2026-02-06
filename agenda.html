@@ -51,50 +51,51 @@
     #agenda {
       margin-top: 30px;
       width: 95%;
-      max-width: 900px;
+      max-width: 1100px;
       border: 1px solid #ddd;
       border-radius: 6px;
       background: white;
-      padding: 10px;
       overflow-x: auto;
+      position: relative;
     }
 
-    /* Grille du planning */
+    /* Grille verticale */
     .grid {
       display: grid;
       grid-template-columns: 80px repeat(7, 1fr);
-      border-collapse: collapse;
-    }
-
-    .grid .cell {
       position: relative;
-      min-height: 80px; /* 1h = 80px */
-      border-left: 1px solid #ccc;
-      border-right: 1px solid #ccc;
+    }
+
+    /* Ligne = 1 heure */
+    .hour-row {
+      height: 80px;
       border-bottom: 1px solid #ccc;
-      border-top: none;
+      position: relative;
     }
 
-    .hour {
-      min-height: 80px;
+    .hour-label {
+      text-align: center;
       line-height: 80px;
+      font-weight: bold;
+      background: #eee;
+      border-right: 1px solid #ccc;
     }
-
-    .grid .cell[data-hour="0"] {
-      border-top: 1px solid #ccc;
-    }
-
 
     .day-header {
       background: #d96b00;
       color: white;
       text-align: center;
       font-weight: bold;
-      border: 1px solid #ccc;
-      padding: 8px 0;
+      padding: 10px 0;
+      border-right: 1px solid #ccc;
     }
 
-    /* Événement étendu */
+    .day-column {
+      position: relative;
+      border-right: 1px solid #ccc;
+    }
+
+    /* Événements */
     .event {
       position: absolute;
       left: 2px;
@@ -105,6 +106,16 @@
       font-size: 0.8rem;
       border-radius: 4px;
       box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    /* Jour actuel */
+    .current-day {
+      background: rgba(217, 107, 0, 0.15);
+    }
+
+    .dark-mode .current-day {
+      background: rgba(255, 140, 26, 0.20);
     }
 
     /* Mode sombre */
@@ -130,20 +141,16 @@
       border: 1px solid #444;
     }
 
-    .dark-mode .cell {
-      border: 1px solid #555;
-    }
-
-    .dark-mode .hour {
+    .dark-mode .hour-label {
       background: #333;
-      border: 1px solid #555;
+      border-right: 1px solid #555;
       color: #eee;
     }
 
     .dark-mode .day-header {
       background: #ff8c1a;
       color: black;
-      border: 1px solid #555;
+      border-right: 1px solid #555;
     }
 
     .dark-mode .event {
@@ -151,15 +158,6 @@
       border-left: 4px solid #ffb066;
       color: white;
     }
-
-    .current-day {
-      background: rgba(217, 107, 0, 0.15); /* léger orange */
-    }
-
-    .dark-mode .current-day {
-      background: rgba(255, 140, 26, 0.2);
-    }
-
   </style>
 </head>
 <body>
@@ -180,7 +178,6 @@
 <script src="agenda.js"></script>
 
 <script>
-  // Appliquer automatiquement le thème sombre si l'utilisateur l'a choisi
   const savedTheme = localStorage.getItem("theme");
   if (savedTheme === "dark") {
     document.body.classList.add("dark-mode");
