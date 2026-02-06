@@ -4,6 +4,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let currentWeek = new Date();
+const HOUR_HEIGHT = 80; // 80px par heure
 
 function startOfWeek(date) {
   const d = new Date(date);
@@ -36,14 +37,13 @@ async function loadAgenda() {
   const agenda = document.getElementById("agenda");
   agenda.innerHTML = "";
 
-  // Création de la grille
   const grid = document.createElement("div");
   grid.className = "grid";
 
   const days = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
 
   // Ligne des jours
-  grid.appendChild(document.createElement("div")); // case vide
+  grid.appendChild(document.createElement("div"));
   days.forEach(d => {
     const div = document.createElement("div");
     div.className = "day-header";
@@ -51,63 +51,95 @@ async function loadAgenda() {
     grid.appendChild(div);
   });
 
-  // 24 heures
-  for (let hour = 0; hour < 24; hour++) {
-    // colonne heure
-    const h = document.createElement("div");
-    h.className = "hour";
-    h.innerText = hour + "h";
-    grid.appendChild(h);
+  // Colonnes des jours
+  const dayColumns = [];
+  for (let i = 0; i < 7; i++) {
+    const col = document.createElement("div");
+    col.className = "day-column";
+    col.style.height = `${24 * HOUR_HEIGHT}px`;
+    dayColumns.push(col);
+  }
 
-    // colonnes jours
-    for (let day = 0; day < 7; day++) {
-      const cell = document.createElement("div");
-      cell.className = "cell";
-      cell.dataset.day = day;
-      cell.dataset.hour = hour;
-      grid.appendChild(cell);
+  // Lignes des heures
+  for (let hour = 0; hour < 24; hour++) {
+    const hourLabel = document.createElement("div");
+    hourLabel.className = "hour-label";
+    hourLabel.innerText = hour + "h";
+    hourLabel.style.gridRow = hour + 2;
+    grid.appendChild(hourLabel);
+
+    for (let d = 0; d < 7; d++) {
+      const row = document.createElement("div");
+      row.className = "hour-row";
+      row.style.gridRow = hour + 2;
+      row.style.gridColumn = d + 2;
+      grid.appendChild(row);
     }
   }
 
-  // --- Mise en avant du jour actuel ---
-  const today = new Date();
-  const todayIndex = (today.getDay() + 6) % 7; // Lundi = 0
-
-  // Surligner les cellules du jour actuel
-  grid.querySelectorAll(`.cell[data-day="${todayIndex}"]`).forEach(cell => {
-    cell.classList.add("current-day");
+  // Ajout des colonnes dans la grille
+  dayColumns.forEach((col, i) => {
+    col.style.gridColumn = i + 2;
+    col.style.gridRow = "2 / span 24";
+    grid.appendChild(col);
   });
 
-  // Surligner l'en-tête du jour actuel
-  const headers = grid.querySelectorAll(".day-header");
-  if (headers[todayIndex]) {
-    headers[todayIndex].classList.add("current-day");
-  }
+  // Jour actuel
+  const today = new Date();
+  const todayIndex = (today.getDay() + 6) % 7;
+  grid.querySelectorAll(".day-header")[todayIndex].classList.add("current-day");
+  dayColumns[todayIndex].classList.add("current-day");
 
-  // Placement des événements avec durée
+  // Placement des événements
   if (!error && data.length > 0) {
+    const eventsByDay = [[], [], [], [], [], [], []];
+
     data.forEach(ev => {
       const start = new Date(ev.start_time);
       const end = new Date(ev.end_time);
 
-      const day = (start.getDay() + 6) % 7; // Lundi = 0
-      const hour = start.getHours();
-      const minutes = start.getMinutes();
+      const day = (start.getDay() + 6) % 7;
+      eventsByDay[day].push({ ev, start, end });
+    });
 
-      const durationMinutes = (end - start) / 60000;
+    eventsByDay.forEach((events, day) => {
+      events.sort((a, b) => a.start - b.start);
 
-      // On ne cherche QUE dans les vraies cellules
-      const cell = [...grid.querySelectorAll(".cell")].find(c =>
-        Number(c.dataset.day) === day &&
-        Number(c.dataset.hour) === hour
-      );
+      const columns = [];
 
-      if (cell) {
+      events.forEach(event => {
+        let placed = false;
+
+        for (let i = 0; i < columns.length; i++) {
+          if (event.start >= columns[i]) {
+            columns[i] = event.end;
+            event.column = i;
+            placed = true;
+            break;
+          }
+        }
+
+        if (!placed) {
+          event.column = columns.length;
+          columns.push(event.end);
+        }
+      });
+
+      const totalCols = columns.length;
+
+      events.forEach(({ ev, start, end, column }) => {
+        const top = start.getHours() * HOUR_HEIGHT +
+                    start.getMinutes() * (HOUR_HEIGHT / 60);
+
+        const height = (end - start) / 60000 * (HOUR_HEIGHT / 60);
+
         const eventDiv = document.createElement("div");
         eventDiv.className = "event";
 
-        eventDiv.style.top = `${minutes}px`;
-        eventDiv.style.height = `${durationMinutes}px`;
+        eventDiv.style.top = `${top}px`;
+        eventDiv.style.height = `${height}px`;
+        eventDiv.style.width = `${100 / totalCols}%`;
+        eventDiv.style.left = `${(100 / totalCols) * column}%`;
 
         eventDiv.innerHTML = `
           <b>${ev.title}</b><br>
@@ -116,8 +148,8 @@ async function loadAgenda() {
           ${end.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}
         `;
 
-        cell.appendChild(eventDiv);
-      }
+        dayColumns[day].appendChild(eventDiv);
+      });
     });
   }
 
