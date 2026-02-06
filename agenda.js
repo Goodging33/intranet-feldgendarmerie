@@ -1,15 +1,15 @@
 const SUPABASE_URL = "https://bdkzvkdqznkjkvpxwmqg.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJka3p2a2Rxem5ramt2cHh3bXFnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAwNDkwNzksImV4cCI6MjA4NTYyNTA3OX0.WPqm4torQsQjDcERoZtTsaGexR4V2GEpn9GtIMelALM";
+const SUPABASE_ANON_KEY = "…";
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let currentWeek = new Date();
-const HOUR_HEIGHT = 80; // 80px par heure
+const HOUR_HEIGHT = 80;
 
 function startOfWeek(date) {
   const d = new Date(date);
   const day = d.getDay() || 7;
-  if (day !== 1) d.setHours(-24 * (day - 1));
+  if (day !== 1) d.setDate(d.getDate() - (day - 1));
   d.setHours(0, 0, 0, 0);
   return d;
 }
@@ -27,154 +27,123 @@ async function loadAgenda() {
   document.getElementById("week-label").innerText =
     `${start.toLocaleDateString()} → ${end.toLocaleDateString()}`;
 
-  const { data, error } = await supabaseClient
+  const { data } = await supabaseClient
     .from("events")
     .select("*")
     .gte("start_time", start.toISOString())
-    .lt("start_time", end.toISOString())
-    .order("start_time");
+    .lt("start_time", end.toISOString());
 
-  const agenda = document.getElementById("agenda");
-  agenda.innerHTML = "";
+  const grid = document.getElementById("agenda-grid");
+  grid.innerHTML = "";
 
-  const grid = document.createElement("div");
-  grid.className = "grid";
-
-  const days = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
-
-  // Ligne des jours
+  // Headers
   grid.appendChild(document.createElement("div"));
-  days.forEach(d => {
-    const div = document.createElement("div");
-    div.className = "day-header";
-    div.innerText = d;
+  ["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"].forEach((d,i)=>{
+    const h=document.createElement("div");
+    h.className="day-header";
+    h.style.gridColumn=i+2;
+    h.innerText=d;
+    grid.appendChild(h);
+  });
+
+  // Hours
+  for(let h=0;h<24;h++){
+    const div=document.createElement("div");
+    div.className="hour";
+    div.style.gridRow=h+2;
+    div.innerText=h+"h";
     grid.appendChild(div);
+  }
+
+  // Events
+  const eventsByDay=[[],[],[],[],[],[],[]];
+  data.forEach(ev=>{
+    const s=new Date(ev.start_time);
+    const d=(s.getDay()+6)%7;
+    eventsByDay[d].push(ev);
   });
 
-  // Colonnes des jours
-  const dayColumns = [];
-  for (let i = 0; i < 7; i++) {
-    const col = document.createElement("div");
-    col.className = "day-column";
-    col.style.height = `${24 * HOUR_HEIGHT}px`;
-    dayColumns.push(col);
-  }
+  eventsByDay.forEach((events,day)=>{
+    events.sort((a,b)=>new Date(a.start_time)-new Date(b.start_time));
 
-  // Lignes des heures
-  for (let hour = 0; hour < 24; hour++) {
-    const hourLabel = document.createElement("div");
-    hourLabel.className = "hour-label";
-    hourLabel.innerText = hour + "h";
-    hourLabel.style.gridRow = hour + 2;
-    grid.appendChild(hourLabel);
+    const tracks=[];
 
-    for (let d = 0; d < 7; d++) {
-      const row = document.createElement("div");
-      row.className = "hour-row";
-      row.style.gridRow = hour + 2;
-      row.style.gridColumn = d + 2;
-      grid.appendChild(row);
-    }
-  }
+    events.forEach(ev=>{
+      const start=new Date(ev.start_time);
+      const end=new Date(ev.end_time);
 
-  // Ajout des colonnes dans la grille
-  dayColumns.forEach((col, i) => {
-    col.style.gridColumn = i + 2;
-    col.style.gridRow = "2 / span 24";
-    grid.appendChild(col);
+      let placed=false;
+      for(let t=0;t<tracks.length;t++){
+        const last=tracks[t][tracks[t].length-1];
+        if(new Date(last.end_time)<=start){
+          tracks[t].push(ev);
+          ev.col=t;
+          placed=true;
+          break;
+        }
+      }
+      if(!placed){
+        ev.col=tracks.length;
+        tracks.push([ev]);
+      }
+    });
+
+    const totalCols=tracks.length;
+
+    events.forEach(ev=>{
+      const start=new Date(ev.start_time);
+      const end=new Date(ev.end_time);
+
+      const top=start.getHours()*HOUR_HEIGHT + start.getMinutes()*(HOUR_HEIGHT/60);
+      const height=(end-start)/60000*(HOUR_HEIGHT/60);
+
+      const div=document.createElement("div");
+      div.className="event";
+      div.style.top=top+"px";
+      div.style.height=height+"px";
+      div.style.left=`calc(${(100/totalCols)*ev.col}% + 80px)`;
+      div.style.width=`calc(${100/totalCols}% - 4px)`;
+
+      div.innerHTML=`<b>${ev.title}</b><br>${start.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})} → ${end.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}`;
+
+      div.onclick=()=>openPopup(ev);
+
+      grid.appendChild(div);
+    });
   });
 
-  // Jour actuel
-  const today = new Date();
-  const todayIndex = (today.getDay() + 6) % 7;
-  grid.querySelectorAll(".day-header")[todayIndex].classList.add("current-day");
-  dayColumns[todayIndex].classList.add("current-day");
-
-  // Placement des événements
-  if (!error && data.length > 0) {
-    const eventsByDay = [[], [], [], [], [], [], []];
-
-    data.forEach(ev => {
-      const start = new Date(ev.start_time);
-      const end = new Date(ev.end_time);
-
-      const day = (start.getDay() + 6) % 7;
-      eventsByDay[day].push({ ev, start, end });
-    });
-
-    eventsByDay.forEach((events, day) => {
-      events.sort((a, b) => a.start - b.start);
-
-      // 🔥 Nouveau système PRO de chevauchement
-      const tracks = [];
-
-      events.forEach(event => {
-        let placed = false;
-
-        for (let t = 0; t < tracks.length; t++) {
-          const lastEvent = tracks[t][tracks[t].length - 1];
-
-          if (event.start >= lastEvent.end) {
-            tracks[t].push(event);
-            event.column = t;
-            placed = true;
-            break;
-          }
-        }
-
-        if (!placed) {
-          event.column = tracks.length;
-          tracks.push([event]);
-        }
-      });
-
-      const totalCols = tracks.length;
-
-      events.forEach(({ ev, start, end, column }) => {
-        const top = start.getHours() * HOUR_HEIGHT +
-                    start.getMinutes() * (HOUR_HEIGHT / 60);
-        const OFFSET = 1;
-        eventDiv.style.top = `${top + OFFSET}px`;    
-
-        const height = (end - start) / 60000 * (HOUR_HEIGHT / 60);
-
-        const eventDiv = document.createElement("div");
-        eventDiv.className = "event";
-
-        eventDiv.style.top = `${top}px`;
-        eventDiv.style.height = `${height - OFFSET}px`;
-
-        // 🔥 Correction du décalage horizontal
-        eventDiv.style.width = `calc(${100 / totalCols}% - 4px)`; 
-        eventDiv.style.left = `calc(${(100 / totalCols) * column}% + 2px)`;
-
-        eventDiv.innerHTML = `
-          <b>${ev.title}</b><br>
-          ${start.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}
-          →
-          ${end.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}
-        `;
-
-        dayColumns[day].appendChild(eventDiv);
-      });
-    });
-  }
-
-  agenda.appendChild(grid);
+  scrollToCurrentHour();
 }
 
-function nextWeek() {
-  currentWeek.setDate(currentWeek.getDate() + 7);
+function scrollToCurrentHour(){
+  const now=new Date();
+  const y=now.getHours()*HOUR_HEIGHT;
+  window.scrollTo({top:y-200,behavior:"smooth"});
+}
+
+function openPopup(ev){
+  const s=new Date(ev.start_time);
+  const e=new Date(ev.end_time);
+
+  document.getElementById("popup-title").innerText=ev.title;
+  document.getElementById("popup-time").innerText=
+    `${s.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})} → ${e.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}`;
+
+  document.getElementById("event-popup").classList.remove("hidden");
+}
+
+document.getElementById("popup-close").onclick=()=>{
+  document.getElementById("event-popup").classList.add("hidden");
+};
+
+document.getElementById("prev").onclick=()=>{
+  currentWeek.setDate(currentWeek.getDate()-7);
   loadAgenda();
-}
+};
 
-function prevWeek() {
-  currentWeek.setDate(currentWeek.getDate() - 7);
+document.getElementById("next").onclick=()=>{
+  currentWeek.setDate(currentWeek.getDate()+7);
   loadAgenda();
-}
-
-function back() {
-  window.location.href = "accueil.html";
-}
+};
 
 loadAgenda();
