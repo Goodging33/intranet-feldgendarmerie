@@ -67,24 +67,23 @@
     }
 
     .grid .cell {
+      position: relative;
+      min-height: 80px; /* 1h = 80px */
       border-left: 1px solid #ccc;
       border-right: 1px solid #ccc;
       border-bottom: 1px solid #ccc;
-      border-top: none; /* empêche la ligne de couper l’événement */
+      border-top: none;
+    }
+
+    .hour {
+      min-height: 80px;
+      line-height: 80px;
     }
 
     .grid .cell[data-hour="0"] {
       border-top: 1px solid #ccc;
     }
 
-    .hour {
-      background: #eee;
-      font-weight: bold;
-      text-align: center;
-      border: 1px solid #ccc;
-      min-height: 60px;
-      line-height: 60px;
-    }
 
     .day-header {
       background: #d96b00;
